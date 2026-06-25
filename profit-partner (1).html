@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Profit Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a0b; --panel:#141416; --panel-2:#1c1c20; --line:#26262b;
+  --ink:#f3f3f1; --ink-dim:#9a9a98; --ink-mute:#6a6a68;
+  --acc:#d4ff3a; --acc-2:#ff6b3d; --good:#7CFFB2; --bad:#ff7a7a;
+  --serif:'Instrument Serif',serif; --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#000;color:var(--ink);font-family:var(--sans);min-height:100%}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;background:
+  radial-gradient(1200px 600px at 20% 0%, #1a1a1f 0%, #000 60%),#000;padding:24px}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.device{width:390px;height:844px;border-radius:54px;background:#0a0a0b;
+  box-shadow: 0 0 0 12px #1a1a1c, 0 0 0 13px #2a2a2e, 0 40px 80px -20px rgba(0,0,0,.8), inset 0 0 0 1px #2a2a2e;
+  position:relative;overflow:hidden}
+.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#000;border-radius:20px;z-index:50}
+.statusbar{position:absolute;top:0;left:0;right:0;height:54px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:18px 32px 0;font-size:15px;font-weight:600;color:#fff}
+.screen{position:absolute;inset:54px 0 0;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+.scroll{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;padding-bottom:100px}
+.scroll::-webkit-scrollbar{display:none}
+.head{padding:14px 22px 8px;display:flex;align-items:center;justify-content:space-between}
+.greet{font-size:12px;color:var(--ink-dim);letter-spacing:.5px;text-transform:uppercase}
+.biz{font-family:var(--serif);font-size:26px;line-height:1.05;margin-top:2px}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#d4ff3a,#ff6b3d);display:grid;place-items:center;font-weight:700;color:#0a0a0b;font-size:13px;border:0}
+.hero{margin:14px 18px 0;padding:20px;border-radius:28px;background:linear-gradient(160deg,#d4ff3a 0%,#bff023 60%,#9fd400 100%);color:#0a0a0b;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18)}
+.hero .lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.7}
+.hero .val{font-family:var(--serif);font-size:46px;line-height:1;margin-top:6px}
+.hero .sub{margin-top:8px;font-size:13px;font-weight:500;opacity:.75}
+.hero .row{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:rgba(10,10,11,.12);color:#0a0a0b;padding:8px 12px;border-radius:999px;font-size:11px;font-weight:600}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 18px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:14px}
+.kpi .k{font-size:10px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase}
+.kpi .v{font-family:var(--serif);font-size:24px;margin-top:4px}
+.kpi .d{font-size:11px;margin-top:4px;color:var(--good)}
+.kpi .d.bad{color:var(--bad)}
+.sect{margin:24px 22px 10px;display:flex;align-items:end;justify-content:space-between}
+.sect h2{font-family:var(--serif);font-size:22px;margin:0;font-weight:400}
+.strat{margin:0 18px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:16px;position:relative;cursor:pointer}
+.card.flag{background:linear-gradient(180deg,#1a1a1d,#141416);border-color:#3a3a14}
+.card.activated{border-color:rgba(124,255,178,.4);background:linear-gradient(180deg,rgba(124,255,178,.06),#141416)}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--acc);background:rgba(212,255,58,.08);padding:5px 9px;border-radius:999px;border:1px solid rgba(212,255,58,.2)}
+.tag.orange{color:var(--acc-2);background:rgba(255,107,61,.08);border-color:rgba(255,107,61,.2)}
+.tag.live{color:var(--good);background:rgba(124,255,178,.08);border-color:rgba(124,255,178,.25)}
+.card h3{font-family:var(--serif);font-size:19px;line-height:1.2;margin:10px 0 6px;font-weight:400}
+.card p{font-size:13px;color:var(--ink-dim);margin:0;line-height:1.5}
+.impact{margin-top:12px;display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px dashed var(--line)}
+.impact .lift{font-family:var(--serif);font-size:20px;color:var(--acc)}
+.impact .lift.orange{color:var(--acc-2)}
+.impact button{background:var(--ink);color:#0a0a0b;border:0;font-weight:700;font-size:12px;padding:9px 14px;border-radius:999px}
+.impact button.on{background:rgba(124,255,178,.15);color:var(--good);border:1px solid rgba(124,255,178,.3)}
+.insights{display:flex;gap:10px;overflow-x:auto;padding:0 18px 4px;scrollbar-width:none}
+.insights::-webkit-scrollbar{display:none}
+.ins{min-width:220px;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:14px}
+.ins .ico{width:34px;height:34px;border-radius:10px;background:#26261a;display:grid;place-items:center;color:var(--acc);font-weight:700;font-size:14px}
+.ins h4{font-size:13px;margin:10px 0 4px;font-weight:600}
+.ins p{font-size:11px;color:var(--ink-mute);margin:0;line-height:1.5}
+.nav{position:absolute;left:18px;right:18px;bottom:14px;height:68px;background:rgba(20,20,22,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--line);border-radius:28px;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);align-items:center;padding:0 8px}
+.nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink-mute);font-size:10px;font-weight:600;padding:8px 0;border-radius:18px;background:none;border:0}
+.nav .it.active{color:var(--acc)}
+.nav .it svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+.nav .fab{background:var(--acc);color:#0a0a0b;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;margin-top:-18px;box-shadow:0 8px 20px -4px rgba(212,255,58,.5);border:0}
+.nav .fab svg{width:22px;height:22px;stroke:#0a0a0b;stroke-width:2.2;fill:none}
+.home-indicator{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:134px;height:5px;background:#fff;border-radius:3px;z-index:60;opacity:.9}
+.tabs{margin:18px 18px 0;display:flex;gap:6px;background:var(--panel-2);border:1px solid var(--line);padding:5px;border-radius:14px}
+.tab{flex:1;text-align:center;font-size:12px;font-weight:600;padding:9px;border-radius:10px;color:var(--ink-dim);background:none;border:0}
+.tab.on{background:var(--ink);color:#0a0a0b}
+.chat-head{padding:14px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line)}
+.chat-head .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#d4ff3a,#ff6b3d);display:grid;place-items:center;font-weight:700;color:#0a0a0b}
+.chat-head .meta{flex:1}
+.chat-head .meta .n{font-weight:700;font-size:14px}
+.chat-head .meta .s{font-size:11px;color:var(--good);display:flex;align-items:center;gap:5px;margin-top:2px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 8px var(--good)}
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:none}
+.msgs::-webkit-scrollbar{display:none}
+.msg{max-width:78%;padding:11px 14px;border-radius:18px;font-size:13.5px;line-height:1.5}
+.msg.bot{background:var(--panel);border:1px solid var(--line);color:var(--ink);align-self:flex-start;border-bottom-left-radius:6px}
+.msg.me{background:var(--acc);color:#0a0a0b;align-self:flex-end;border-bottom-right-radius:6px;font-weight:500}
+.msg b{color:var(--acc);font-weight:600}
+.chips{padding:0 16px 8px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;font-size:12px;border:1px solid var(--line);padding:8px 12px;border-radius:999px;color:var(--ink-dim);background:var(--panel);white-space:nowrap}
+.composer{padding:10px 14px 96px;display:flex;gap:8px;align-items:center;background:var(--bg);border-top:1px solid var(--line)}
+.composer input{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:12px 16px;color:var(--ink);font-size:13.5px;outline:none}
+.composer input:focus{border-color:var(--acc)}
+.composer .send{width:42px;height:42px;border-radius:50%;background:var(--acc);border:0;display:grid;place-items:center}
+.composer .send svg{width:18px;height:18px;stroke:#0a0a0b;stroke-width:2.4;fill:none}
+.toast{position:absolute;top:70px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--ink);color:#0a0a0b;padding:10px 18px;border-radius:999px;font-size:12.5px;font-weight:600;z-index:100;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.good{background:var(--good)}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.6);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-radius:28px 28px 0 0;z-index:91;padding:8px 20px 30px;transform:translateY(100%);transition:transform .35s cubic-bezier(.7,0,.2,1);max-height:80%;overflow-y:auto;scrollbar-width:none}
+.sheet::-webkit-scrollbar{display:none}
+.sheet.open{transform:translateY(0)}
+.sheet .handle{width:40px;height:4px;background:var(--line);border-radius:2px;margin:6px auto 14px}
+.sheet h3{font-family:var(--serif);font-size:22px;margin:0 0 6px;font-weight:400}
+.sheet .desc{font-size:13px;color:var(--ink-dim);margin:0 0 16px;line-height:1.5}
+.sheet .stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.sheet .stat div{background:var(--panel-2);border:1px solid var(--line);padding:12px;border-radius:14px}
+.sheet .stat .l{font-size:10px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase}
+.sheet .stat .v{font-family:var(--serif);font-size:20px;margin-top:4px;color:var(--acc)}
+.sheet ul{margin:0 0 16px;padding-left:18px;font-size:13px;color:var(--ink-dim);line-height:1.7}
+.sheet .act{width:100%;background:var(--acc);color:#0a0a0b;border:0;padding:14px;border-radius:16px;font-weight:700;font-size:14px}
+.profile{padding:24px 22px 0;text-align:center}
+.profile .big{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#d4ff3a,#ff6b3d);margin:0 auto;display:grid;place-items:center;font-weight:700;font-size:28px;color:#0a0a0b}
+.profile .nm{font-family:var(--serif);font-size:24px;margin-top:12px}
+.profile .em{font-size:13px;color:var(--ink-dim);margin-top:2px}
+.menu{margin:24px 18px 0;background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.menu .row{display:flex;align-items:center;gap:14px;padding:15px 16px;border-bottom:1px solid var(--line);font-size:14px;background:none;width:100%;border-left:0;border-right:0;border-top:0;color:var(--ink);text-align:left;cursor:pointer}
+.menu .row:last-child{border-bottom:0}
+.menu .row .ic{width:32px;height:32px;border-radius:9px;background:#26261a;display:grid;place-items:center;color:var(--acc)}
+.menu .row .arr{margin-left:auto;color:var(--ink-mute);font-size:12px}
+.auth-wrap{padding:40px 26px;display:flex;flex-direction:column;height:100%;justify-content:center}
+.auth-wrap h1{font-family:var(--serif);font-size:42px;margin:0;line-height:1}
+.auth-wrap .sub{color:var(--ink-dim);margin-top:8px;font-size:14px;margin-bottom:28px}
+.field{display:block;margin-bottom:12px}
+.field label{font-size:11px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:6px}
+.field input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--ink);font-size:14px;outline:none}
+.field input:focus{border-color:var(--acc)}
+.btn-primary{width:100%;background:var(--acc);color:#0a0a0b;border:0;padding:15px;border-radius:16px;font-weight:700;font-size:14px;margin-top:8px}
+.demo-list{margin-top:24px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}
+.demo-list .ttl{font-size:10px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.demo-list button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);padding:8px 4px;font-size:12.5px;border-top:1px solid var(--line)}
+.demo-list button:first-of-type{border-top:0}
+.demo-list .em{color:var(--ink-mute);font-size:11px}
+.err{color:var(--bad);font-size:12px;margin-top:6px}
+.pos-head{padding:14px 18px 8px;display:flex;align-items:center;justify-content:space-between}
+.pos-head .ttl{font-family:var(--serif);font-size:24px}
+.pos-head button{background:none;border:0;color:var(--ink-dim);font-size:20px;padding:4px 8px}
+.pos-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 14px;overflow-y:auto;align-content:start}
+.pos-grid::-webkit-scrollbar{display:none}
+.pos-item{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;color:var(--ink)}
+.pos-item:active{background:var(--panel-2)}
+.pos-item .nm{font-size:13px;font-weight:600}
+.pos-item .pr{font-size:11px;color:var(--ink-mute)}
+.pos-item .mg{font-size:10px;color:var(--good);margin-top:4px}
+.cart{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:14px 18px 22px;z-index:25;max-height:60%;display:flex;flex-direction:column}
+.cart-rows{flex:1;overflow-y:auto;margin-bottom:10px;max-height:200px}
+.cart-rows::-webkit-scrollbar{display:none}
+.cart-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px solid var(--line)}
+.cart-row .qty{color:var(--ink-mute);font-size:11px;margin-left:6px}
+.cart-row button{background:none;border:0;color:var(--bad);font-size:14px;padding:0 6px}
+.cart-tot{display:flex;justify-content:space-between;font-family:var(--serif);font-size:22px;margin:6px 0 10px}
+.cart-actions{display:flex;gap:8px}
+.cart-actions button{flex:1;padding:13px;border-radius:14px;border:0;font-weight:700;font-size:13px}
+.cart-actions .cancel{background:var(--panel-2);color:var(--ink-dim)}
+.cart-actions .charge{background:var(--acc);color:#0a0a0b}
+.empty-cart{text-align:center;color:var(--ink-mute);font-size:12px;padding:20px}
+.biz-switch{margin:0 18px 16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;align-items:center;gap:10px}
+.biz-switch select{flex:1;background:none;border:0;color:var(--ink);font-size:13px;outline:none}
+@media (max-width:430px){body{padding:0;background:#0a0a0b}.device{width:100vw;height:100vh;border-radius:0;box-shadow:none}.notch{display:none}.home-indicator{display:none}.statusbar{display:none}.screen{inset:0}}
+</style>
+</head>
+<body>
+<div class="device">
+  <div class="notch"></div>
+  <div class="statusbar"><span>9:41</span><span>● ● ●</span></div>
+  <div class="screen" id="screen"></div>
+  <div class="home-indicator"></div>
+</div>
+
+<script>
+// ============== DATA ==============
+const DEMO_USERS = [
+  { email:"nomsa@sunrise.cafe", password:"cafe123", name:"Nomsa Mokoena", initials:"NM", businessIds:["sunrise"] },
+  { email:"thabo@bistro.co",    password:"bistro123", name:"Thabo Dlamini", initials:"TD", businessIds:["bistro"] },
+  { email:"demo@demo.com",      password:"demo123", name:"Demo Owner",    initials:"DO", businessIds:["pizzeria","sunrise"] },
+];
+const BUSINESSES = {
+  sunrise:{ id:"sunrise", name:"Sunrise Café & Roastery", baseRevenue:241300, menu:[
+    {id:"fw",name:"Flat White",price:32,margin:.62},{id:"ol",name:"Oat Latte",price:38,margin:.71},
+    {id:"cap",name:"Cappuccino",price:30,margin:.60},{id:"crs",name:"Croissant",price:28,margin:.45},
+    {id:"brn",name:"Brunch Bowl",price:89,margin:.55},{id:"av",name:"Avo Toast",price:65,margin:.50},
+    {id:"esp",name:"Espresso",price:22,margin:.68},{id:"mfn",name:"Muffin",price:24,margin:.40}]},
+  bistro:{ id:"bistro", name:"Thabo's Bistro", baseRevenue:380000, menu:[
+    {id:"stk",name:"Ribeye Steak",price:245,margin:.50},{id:"bgr",name:"Bistro Burger",price:135,margin:.58},
+    {id:"sld",name:"Garden Salad",price:75,margin:.66},{id:"psta",name:"Pasta Primavera",price:110,margin:.62},
+    {id:"wne",name:"House Wine",price:60,margin:.70},{id:"dsr",name:"Tiramisu",price:55,margin:.65}]},
+  pizzeria:{ id:"pizzeria", name:"Demo Pizzeria", baseRevenue:150000, menu:[
+    {id:"mg",name:"Margherita",price:95,margin:.60},{id:"pp",name:"Pepperoni",price:115,margin:.55},
+    {id:"qt",name:"Quattro Formaggi",price:130,margin:.52},{id:"grl",name:"Garlic Bread",price:45,margin:.70},
+    {id:"cl",name:"Coke 330ml",price:25,margin:.65}]},
+};
+const STRATEGIES = [
+  {id:"s1",flag:true,tagCls:"",tag:"★ Flagship",
+   title:'Kill the 7–9am discount. Launch a R39 "Commuter Combo".',
+   desc:"Your morning rush is price-insensitive — 78% buy coffee + pastry anyway. Bundle them at a premium instead of discounting.",
+   lift:18400,liftCls:"",
+   why:["78% of 7–9am tickets already include a pastry","Price elasticity in this window: -0.18 (very low)","Competitor avg: R 42 for same combo"],
+   stats:[["Effort","Low"],["Risk","Low"],["Time to impact","7 days"],["Confidence","96%"]]},
+  {id:"s2",flag:false,tag:"Cut",tagCls:"orange",
+   title:"Drop 3 lowest-margin items.",
+   desc:"Lowest performers eat 4% of revenue at 11% margin. Free shelf for high-margin items.",
+   lift:5900,liftCls:"orange",
+   why:["Avg margin 11% vs category avg 47%","Together = 4% of revenue, 1% of profit","Shelf can carry 2 high-margin alternatives"],
+   stats:[["Effort","Low"],["Risk","Low"],["Time to impact","3 days"],["Confidence","91%"]]},
+  {id:"s3",flag:false,tag:"Shift",tagCls:"",
+   title:"Close 30 min earlier on Tue & Wed.",
+   desc:"Last half-hour averages 3 customers. Labour cost outpaces revenue by R 280/day.",
+   lift:3300,liftCls:"",
+   why:["Avg 3.1 customers between 5:30–6pm","Staff cost R 320, revenue R 40","No regulars in this window"],
+   stats:[["Effort","None"],["Risk","Low"],["Time to impact","Immediate"],["Confidence","89%"]]},
+  {id:"s4",flag:false,tag:"Win-back",tagCls:"orange",
+   title:"Re-engage lapsed regulars.",
+   desc:'Send a one-time "we miss you" with a free upgrade. Modeled return rate: 18%.',
+   lift:3800,liftCls:"orange",
+   why:["412 customers visited 5+ times, none in 60 days","Industry win-back rate: 12–22%","Free upgrade cost: R 4, avg ticket: R 67"],
+   stats:[["Effort","Low"],["Risk","None"],["Time to impact","14 days"],["Confidence","82%"]]},
+];
+const REPLIES = [
+  {k:["margin","killing","cost"], r:"Your top margin killer right now is <b>supplier cost</b> — switch your top-volume input and recover ~R 1,200/mo. Second is the morning discount you don't need."},
+  {k:["close","hours","day","open"], r:"Tuesdays close 30 min earlier — last half-hour averages 3 customers. Saturday, stay open longer — you're turning people away."},
+  {k:["price","raise","expensive"], r:"Yes, on your top 4 items. Modeled volume drop under 2%. Net lift: <b>R 4,100/mo</b>."},
+  {k:["top","best","profit","item"], r:"By margin: your highest-margin item. By volume: your most ordered. Push the high-margin one as default."},
+  {k:["pos","sale","ticket"], r:"Every POS sale you ring up gets folded into the benchmark. The more you record, the sharper the recommendations get."},
+  {k:["hi","hello","hey","sup"], r:"Hey — I've got 4 strategies live. Want me to walk through the flagship?"},
+];
+
+// ============== STORE (localStorage) ==============
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.warn('localStorage write failed',e)}};
+const lsGet=(k,fb=null)=>{try{const v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb}catch{return fb}};
+const lsDel=k=>{try{localStorage.removeItem(k)}catch(e){}};
+const SESSION="pp_session", ACTIVE="pp_active_biz";
+const salesKey=b=>"pp_sales_"+b, stratsKey=b=>"pp_strats_"+b;
+const getSession=()=>lsGet(SESSION);
+const getActive=()=>lsGet(ACTIVE);
+const setActive=id=>{lsSet(ACTIVE,id);render()};
+const login=(em,pw)=>{const u=DEMO_USERS.find(x=>x.email.toLowerCase()===em.toLowerCase()&&x.password===pw);if(!u)return null;const{password,...user}=u;lsSet(SESSION,user);const cur=lsGet(ACTIVE);if(!cur||!user.businessIds.includes(cur))lsSet(ACTIVE,user.businessIds[0]);return user};
+const logout=()=>{lsDel(SESSION);lsDel(ACTIVE);state.page="home";state.cart={};render()};
+const getSales=b=>lsGet(salesKey(b),[]);
+const addSale=(b,items)=>{const total=items.reduce((s,i)=>s+i.price*i.qty,0);const sale={id:Math.random().toString(36).slice(2,10),ts:Date.now(),items,total};const all=[sale,...getSales(b)].slice(0,500);lsSet(salesKey(b),all)};
+const getStrats=b=>lsGet(stratsKey(b),[]);
+const toggleStrat=(b,id)=>{const c=getStrats(b);const n=c.includes(id)?c.filter(x=>x!==id):[...c,id];lsSet(stratsKey(b),n);return n.includes(id)};
+
+function computeStats(bizId){
+  const sales=getSales(bizId), now=Date.now(), day=864e5;
+  const f=(ms)=>sales.filter(s=>now-s.ts<ms);
+  const sum=xs=>xs.reduce((a,s)=>a+s.total,0);
+  const margin=xs=>{const tot=sum(xs);if(!tot)return 0;const p=xs.reduce((a,s)=>a+s.items.reduce((q,i)=>q+i.price*i.qty*i.margin,0),0);return p/tot};
+  const wrap=xs=>({rev:sum(xs),tickets:xs.length,avg:xs.length?sum(xs)/xs.length:0,margin:margin(xs)});
+  const itemMap=new Map();
+  f(30*day).forEach(s=>s.items.forEach(i=>{const c=itemMap.get(i.id)||{name:i.name,qty:0,rev:0,margin:i.margin};c.qty+=i.qty;c.rev+=i.qty*i.price;itemMap.set(i.id,c)}));
+  const items=[...itemMap.values()];
+  return {today:wrap(f(day)),week:wrap(f(7*day)),month:wrap(f(30*day)),
+    topByQty:[...items].sort((a,b)=>b.qty-a.qty)[0],
+    topByMargin:[...items].sort((a,b)=>b.margin-a.margin)[0],
+    totalSales:sales.length};
+}
+
+// ============== APP STATE ==============
+const state = {
+  page:"home", period:"today", sheetId:null, cart:{}, toast:null, toastCls:"",
+  authErr:"", msgs:null
+};
+let toastTimer=null;
+function showToast(msg,cls=""){state.toast=msg;state.toastCls=cls;render();clearTimeout(toastTimer);toastTimer=setTimeout(()=>{state.toast=null;render()},2200)}
+
+// ============== RENDER ==============
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
+const screen = document.getElementById("screen");
+
+function render(){
+  const s = getSession();
+  if(!s){ screen.innerHTML = authView(); bindAuth(); return; }
+  const bizId = getActive(); const biz = BUSINESSES[bizId];
+  if(!biz){ logout(); return; }
+  screen.innerHTML = shellView(s, biz);
+  bindShell(s, biz);
+}
+
+function authView(){
+  const demos = DEMO_USERS.map(u=>`<button type="button" data-em="${u.email}" data-pw="${u.password}">
+    <div>${u.name} <span class="em">· ${u.email}</span></div>
+    <div class="em">password: ${u.password}</div></button>`).join("");
+  return `<div class="auth-wrap scroll" style="padding-bottom:40px">
+    <h1>Profit<br/>Partner.</h1>
+    <div class="sub">The radical operator for your business.</div>
+    <form id="loginForm">
+      <div class="field"><label>Email</label><input id="em" type="email" placeholder="you@business.com" autocomplete="email"></div>
+      <div class="field"><label>Password</label><input id="pw" type="password" placeholder="••••••••" autocomplete="current-password"></div>
+      ${state.authErr?`<div class="err">${state.authErr}</div>`:""}
+      <button type="submit" class="btn-primary">Sign in</button>
+    </form>
+    <div class="demo-list"><div class="ttl">Demo accounts · tap to enter</div>${demos}</div>
+  </div>`;
+}
+function bindAuth(){
+  screen.querySelector("#loginForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const em=screen.querySelector("#em").value.trim(), pw=screen.querySelector("#pw").value;
+    const u=login(em,pw); if(!u){state.authErr="Wrong email or password";render();return}
+    state.authErr=""; render();
+  });
+  screen.querySelectorAll(".demo-list button").forEach(b=>b.addEventListener("click",()=>{
+    const u=login(b.dataset.em,b.dataset.pw); if(u) render();
+  }));
+}
+
+function shellView(user, biz){
+  const stats = computeStats(biz.id);
+  const activated = getStrats(biz.id);
+  let body="";
+  if(state.page==="home") body=homeView(user,biz,stats,activated);
+  else if(state.page==="insights") body=insightsView(biz,stats);
+  else if(state.page==="pos") body=posView(biz);
+  else if(state.page==="advisor") body=advisorView(biz,stats);
+  else if(state.page==="me") body=meView(user,biz,activated);
+
+  const toast = state.toast?`<div class="toast show ${state.toastCls}">${esc(state.toast)}</div>`:"";
+  const sheet = state.sheetId?sheetView(state.sheetId, activated.includes(state.sheetId)):"";
+
+  return toast + body + navView() + sheet;
+}
+
+function navView(){
+  const nb=(p,label,svg)=>`<button class="it ${state.page===p?"active":""}" data-nav="${p}">
+    <svg viewBox="0 0 24 24">${svg}</svg>${label}</button>`;
+  return `<div class="nav">
+    ${nb("home","Home",'<path d="M3 12l9-8 9 8v9a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/>')}
+    ${nb("insights","Insights",'<path d="M3 17l5-5 4 4 8-9"/><path d="M21 7v5h-5"/>')}
+    <button class="it" data-nav="pos" aria-label="POS"><div class="fab">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M2 21h20"/><path d="M8 8h8M8 12h5"/></svg>
+    </div></button>
+    ${nb("advisor","Advisor",'<path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/>')}
+    ${nb("me","Me",'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>')}
+  </div>`;
+}
+
+function homeView(user, biz, stats, activated){
+  const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const h=new Date().getHours();
+  const part=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+  const baseOpp={today:1180,week:7250,month:31400}[state.period];
+  const liveBonus=Math.round(stats.month.rev*0.02);
+  const opp=baseOpp+liveBonus;
+  const s=stats[state.period];
+  const baseKpi={
+    today:[{k:"Revenue · today",v:"R 8,240",d:"▲ 12.4% vs avg"},{k:"Margin",v:"38.2%",d:"▼ 1.1% w/w",cls:"bad"},{k:"Avg ticket",v:"R 67",d:"▲ R 4"},{k:"Foot traffic",v:"142",d:"▲ 8"}],
+    week:[{k:"Revenue · week",v:"R 58,920",d:"▲ 8.1% w/w"},{k:"Margin",v:"37.6%",d:"▼ 0.4%",cls:"bad"},{k:"Avg ticket",v:"R 64",d:"▲ R 2"},{k:"Foot traffic",v:"982",d:"▲ 54"}],
+    month:[{k:"Revenue · month",v:"R 241,300",d:"▲ 5.8% m/m"},{k:"Margin",v:"37.9%",d:"▲ 0.6%"},{k:"Avg ticket",v:"R 65",d:"▲ R 3"},{k:"Foot traffic",v:"4,128",d:"▲ 312"}]
+  }[state.period];
+  const kpis = s.tickets>0 ? [
+    {k:`Revenue · ${state.period} (live)`,v:`R ${Math.round(s.rev).toLocaleString()}`,d:`${s.tickets} tickets recorded`},
+    {k:"Live margin",v:`${(s.margin*100).toFixed(1)}%`,d:"vs target 40%",cls:s.margin<0.4?"bad":""},
+    {k:"Avg ticket",v:`R ${s.avg.toFixed(0)}`,d:"from POS"},
+    {k:"Tickets",v:`${s.tickets}`,d:"live count"},
+  ] : baseKpi;
+
+  const switcher = user.businessIds.length>1 ? `<div class="biz-switch">
+    <span style="font-size:11px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase">Biz</span>
+    <select id="bizSel">${user.businessIds.map(id=>`<option value="${id}" ${id===biz.id?"selected":""}>${esc(BUSINESSES[id]?.name||id)}</option>`).join("")}</select>
+  </div>`:"";
+
+  const tabs = ["today","week","month"].map(p=>`<button class="tab ${state.period===p?"on":""}" data-period="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join("");
+  const kpisHtml = kpis.map(k=>`<div class="kpi"><div class="k">${esc(k.k)}</div><div class="v">${esc(k.v)}</div><div class="d ${k.cls||""}">${esc(k.d)}</div></div>`).join("");
+  const stratsHtml = STRATEGIES.map(s=>{
+    const on=activated.includes(s.id);
+    return `<div class="card ${s.flag?"flag":""} ${on?"activated":""}" data-strat="${s.id}">
+      <span class="tag ${on?"live":s.tagCls}">${on?"● Active":esc(s.tag)}</span>
+      <h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p>
+      <div class="impact"><div>
+        <div style="font-size:10px;color:var(--ink-mute);letter-spacing:1px">MONTHLY LIFT</div>
+        <div class="lift ${s.liftCls}">+R ${s.lift.toLocaleString()}</div></div>
+        <button class="${on?"on":""}" data-toggle="${s.id}">${on?"✓ Active":"Activate"}</button>
+      </div></div>`;
+  }).join("");
+  const liveIns = stats.topByMargin?`<div class="ins"><div class="ico">$$</div><h4>Top margin (live)</h4><p>${esc(stats.topByMargin.name)} — ${(stats.topByMargin.margin*100).toFixed(0)}% margin from your POS.</p></div>`:"";
+
+  return `<div class="scroll">
+    <div class="head"><div><div class="greet">${days[new Date().getDay()]} · ${part}</div><div class="biz">${esc(biz.name)}</div></div>
+      <button class="avatar">${esc(user.initials)}</button></div>
+    ${switcher}
+    <div class="tabs">${tabs}</div>
+    <div class="hero">
+      <div class="lbl">Profit opportunity · ${state.period}</div>
+      <div class="val">+R ${opp.toLocaleString()}</div>
+      <div class="sub">4 radical moves tailored to your business. Benchmarked against ${Math.max(stats.totalSales,0)} of your POS sales + market dynamics.</div>
+      <div class="row"><div class="pill">● ${activated.length}/4 active</div><div class="pill">94% confidence</div></div>
+    </div>
+    <div class="kpis">${kpisHtml}</div>
+    <div class="sect"><h2>Radical strategies</h2></div>
+    <div class="strat">${stratsHtml}</div>
+    <div class="sect"><h2>Insights</h2></div>
+    <div class="insights">
+      <div class="ins"><div class="ico">28%</div><h4>Peak window carries you</h4><p>Your top 2hr window = 28% of monthly profit on 18% of hours.</p></div>
+      <div class="ins"><div class="ico">↑11</div><h4>Supplier up</h4><p>Switch suppliers and save ~R 1,200/mo.</p></div>
+      <div class="ins"><div class="ico">2.3×</div><h4>Loyalty wins</h4><p>Members spend 2.3× more. Only 14% enrolled.</p></div>
+      ${liveIns}
+    </div>
+    <div style="height:30px"></div>
+  </div>`;
+}
+
+function insightsView(biz, stats){
+  const bars=[20,35,75,85,45,90,100,55,40,30,18,12].map((h,i)=>{
+    const col=i===5||i===6?"var(--acc-2)":(i===2||i===3?"var(--acc)":"#2a2a2e");
+    return `<div style="flex:1;background:${col};height:${h}%;border-radius:4px"></div>`;
+  }).join("");
+  return `<div class="scroll">
+    <div class="head"><div><div class="greet">Trends · last 90 days</div><div class="biz">Insights</div></div></div>
+    <div class="kpis" style="margin-top:18px">
+      <div class="kpi"><div class="k">Best day</div><div class="v">Saturday</div><div class="d">R ${(biz.baseRevenue*0.06).toFixed(0)} avg</div></div>
+      <div class="kpi"><div class="k">Worst day</div><div class="v">Tuesday</div><div class="d bad">R ${(biz.baseRevenue*0.02).toFixed(0)} avg</div></div>
+      <div class="kpi"><div class="k">Top item</div><div class="v">${esc(stats.topByQty?.name??biz.menu[0].name)}</div><div class="d">${stats.topByQty?.qty??312}/period</div></div>
+      <div class="kpi"><div class="k">Top margin</div><div class="v">${esc(stats.topByMargin?.name??biz.menu[1].name)}</div><div class="d">${((stats.topByMargin?.margin??0.71)*100).toFixed(0)}%</div></div>
+    </div>
+    <div class="sect"><h2>Hour-by-hour profit</h2></div>
+    <div style="margin:0 18px;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px">
+      <div style="display:flex;align-items:flex-end;gap:6px;height:120px">${bars}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:var(--ink-mute)"><span>7a</span><span>9a</span><span>11a</span><span>1p</span><span>3p</span><span>5p</span><span>7p</span></div>
+    </div>
+    <div class="sect"><h2>Watchlist</h2></div>
+    <div class="strat">
+      <div class="card"><span class="tag orange">Cost</span><h3>Supplier cost up 11%</h3><p>Alternative quoted 17% lower. Switch saves R 1,200/mo.</p></div>
+      <div class="card"><span class="tag">Demand</span><h3>High-margin demand +34%</h3><p>Reorder 2× — you ran out twice last week.</p></div>
+    </div>
+    <div style="height:60px"></div>
+  </div>`;
+}
+
+function posView(biz){
+  const items = biz.menu.map(it=>`<button class="pos-item" data-add="${it.id}">
+    <div class="nm">${esc(it.name)}</div><div class="pr">R ${it.price}</div>
+    <div class="mg">${(it.margin*100).toFixed(0)}% margin</div></button>`).join("");
+  const lines = Object.entries(state.cart).filter(([,q])=>q>0).map(([id,qty])=>{
+    const m=biz.menu.find(x=>x.id===id); return {...m,qty};
+  });
+  const total = lines.reduce((s,l)=>s+l.price*l.qty,0);
+  const rows = lines.length===0
+    ? `<div class="empty-cart">Cart is empty</div>`
+    : lines.map(l=>`<div class="cart-row"><div>${esc(l.name)}<span class="qty">× ${l.qty}</span></div>
+        <div style="display:flex;align-items:center;gap:6px"><span>R ${(l.price*l.qty).toFixed(0)}</span><button data-rm="${l.id}">×</button></div></div>`).join("");
+  return `<div class="scroll" style="padding-bottom:0;display:flex;flex-direction:column">
+    <div class="pos-head"><button data-nav="home">←</button><div class="ttl">Point of sale</div><div style="width:32px"></div></div>
+    <div style="padding:0 18px 8px;font-size:12px;color:var(--ink-mute)">Tap an item to add. Every sale becomes a benchmark for the advisor.</div>
+    <div class="pos-grid">${items}</div>
+    <div class="cart">
+      <div class="cart-rows">${rows}</div>
+      <div class="cart-tot"><span>Total</span><span>R ${total.toFixed(0)}</span></div>
+      <div class="cart-actions"><button class="cancel" id="clearCart">Clear</button><button class="charge" id="charge">Charge</button></div>
+    </div>
+  </div>`;
+}
+
+function advisorView(biz, stats){
+  if(!state.msgs){
+    state.msgs = [
+      {who:"bot",html:`Morning. I ran your overnight numbers for <b>${esc(biz.name)}</b>${stats.totalSales>0?` — ${stats.totalSales} live POS sales feeding the model.`:`. Ring up some sales in the POS to sharpen my model.`}`},
+      {who:"bot",html:`Note: the AI API is in <b>offline mode</b> right now — I'm using your local benchmark data and canned playbooks.`}
+    ];
+  }
+  const msgs = state.msgs.map(m=>`<div class="msg ${m.who}">${m.html}</div>`).join("");
+  const chips = ["What's killing my margin?","Best day to close?","Should I raise prices?","Top profit item?"]
+    .map(c=>`<button class="chip" data-chip="${esc(c)}">${esc(c)}</button>`).join("");
+  return `<div class="chat-head"><div class="av">AI</div><div class="meta"><div class="n">Profit Advisor</div><div class="s"><span class="dot"></span> Offline mode · using your benchmarks</div></div></div>
+    <div class="msgs" id="msgs">${msgs}</div>
+    <div class="chips">${chips}</div>
+    <div class="composer"><input id="msgInp" placeholder="Ask anything about your business…">
+      <button class="send" id="sendBtn"><svg viewBox="0 0 24 24"><path d="M5 12l14-7-5 7 5 7z"/></svg></button></div>`;
+}
+
+function meView(user, biz, activated){
+  return `<div class="scroll">
+    <div class="profile"><div class="big">${esc(user.initials)}</div><div class="nm">${esc(user.name)}</div><div class="em">${esc(user.email)}</div></div>
+    <div class="menu">
+      <button class="row"><div class="ic">⚙</div>Business · ${esc(biz.name)}<div class="arr">›</div></button>
+      <button class="row"><div class="ic">⌁</div>POS<div class="arr">Built-in ✓</div></button>
+      <button class="row"><div class="ic">★</div>Active strategies<div class="arr">${activated.length}</div></button>
+      <button class="row"><div class="ic">$</div>Subscription<div class="arr">Pro</div></button>
+      <button class="row"><div class="ic">?</div>Help & support<div class="arr">›</div></button>
+      <button class="row" id="logoutBtn" style="color:var(--bad)"><div class="ic" style="background:rgba(255,122,122,.1);color:var(--bad)">⎋</div>Sign out<div class="arr"></div></button>
+    </div><div style="height:120px"></div>
+  </div>`;
+}
+
+function sheetView(id, activated){
+  const s=STRATEGIES.find(x=>x.id===id); if(!s) return "";
+  const stats=[["Monthly lift",`+R ${s.lift.toLocaleString()}`],...s.stats]
+    .map(([l,v],i)=>`<div><div class="l">${esc(l)}</div><div class="v" ${i===0?"":'style="color:var(--ink);font-size:16px"'}>${esc(v)}</div></div>`).join("");
+  const why=s.why.map(w=>`<li>${esc(w)}</li>`).join("");
+  return `<div class="scrim open" id="scrim"></div>
+    <div class="sheet open"><div class="handle"></div>
+      <span class="tag ${activated?"live":s.tagCls}">${activated?"● Active":esc(s.tag)}</span>
+      <h3 style="margin-top:10px">${esc(s.title)}</h3>
+      <p class="desc">${esc(s.desc)}</p>
+      <div class="stat">${stats}</div>
+      <div style="font-size:11px;color:var(--ink-mute);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Why this works</div>
+      <ul>${why}</ul>
+      <button class="act" id="sheetToggle">${activated?"Pause strategy":"Activate this strategy"}</button>
+    </div>`;
+}
+
+// ============== BINDINGS ==============
+function bindShell(user, biz){
+  screen.querySelectorAll("[data-nav]").forEach(b=>b.addEventListener("click",()=>{
+    state.page=b.dataset.nav;
+    if(state.page!=="advisor") state.msgs=null;
+    render();
+  }));
+  screen.querySelectorAll("[data-period]").forEach(b=>b.addEventListener("click",()=>{state.period=b.dataset.period;render()}));
+  const sel=screen.querySelector("#bizSel"); if(sel) sel.addEventListener("change",e=>setActive(e.target.value));
+  screen.querySelectorAll("[data-strat]").forEach(c=>c.addEventListener("click",e=>{
+    if(e.target.closest("[data-toggle]")) return;
+    state.sheetId=c.dataset.strat; render();
+  }));
+  screen.querySelectorAll("[data-toggle]").forEach(b=>b.addEventListener("click",e=>{
+    e.stopPropagation();
+    const on=toggleStrat(biz.id,b.dataset.toggle);
+    showToast(on?"✓ Strategy activated":"Strategy paused",on?"good":"");
+  }));
+  // POS
+  screen.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.add; state.cart[id]=(state.cart[id]||0)+1; render();
+  }));
+  screen.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",()=>{
+    delete state.cart[b.dataset.rm]; render();
+  }));
+  const clr=screen.querySelector("#clearCart"); if(clr) clr.addEventListener("click",()=>{state.cart={};render()});
+  const chg=screen.querySelector("#charge"); if(chg) chg.addEventListener("click",()=>{
+    const lines=Object.entries(state.cart).filter(([,q])=>q>0).map(([id,qty])=>{const m=biz.menu.find(x=>x.id===id);return {id:m.id,name:m.name,price:m.price,margin:m.margin,qty}});
+    if(!lines.length) return;
+    const total=lines.reduce((s,l)=>s+l.price*l.qty,0);
+    addSale(biz.id,lines); state.cart={};
+    showToast(`✓ Sale recorded · R ${total.toFixed(0)}`,"good");
+  });
+  // Sheet
+  const scrim=screen.querySelector("#scrim"); if(scrim) scrim.addEventListener("click",()=>{state.sheetId=null;render()});
+  const st=screen.querySelector("#sheetToggle"); if(st) st.addEventListener("click",()=>{
+    const id=state.sheetId; const on=toggleStrat(biz.id,id); state.sheetId=null;
+    showToast(on?"✓ Strategy activated":"Strategy paused",on?"good":"");
+  });
+  // Advisor
+  const send=screen.querySelector("#sendBtn"); const inp=screen.querySelector("#msgInp");
+  function pushSend(t){
+    if(!t.trim())return;
+    state.msgs.push({who:"me",html:esc(t)});
+    const lo=t.toLowerCase();
+    const hit=REPLIES.find(r=>r.k.some(k=>lo.includes(k)));
+    const reply=hit?hit.r:`Looking at your last 90 days for ${esc(biz.name)}… the highest-leverage move is the <b>flagship strategy</b> on your home screen.`;
+    if(inp) inp.value="";
+    render();
+    setTimeout(()=>{state.msgs.push({who:"bot",html:reply});render();const m=screen.querySelector("#msgs");if(m)m.scrollTop=m.scrollHeight},600);
+  }
+  if(send) send.addEventListener("click",()=>pushSend(inp.value));
+  if(inp) inp.addEventListener("keydown",e=>{if(e.key==="Enter")pushSend(inp.value)});
+  screen.querySelectorAll("[data-chip]").forEach(b=>b.addEventListener("click",()=>pushSend(b.dataset.chip)));
+  const m=screen.querySelector("#msgs"); if(m) m.scrollTop=m.scrollHeight;
+  // Logout
+  const lo=screen.querySelector("#logoutBtn"); if(lo) lo.addEventListener("click",logout);
+}
+
+render();
+</script>
+</body>
+</html>
